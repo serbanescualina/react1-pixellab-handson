@@ -18,7 +18,6 @@ class NewsletterForm extends React.Component {
     return re.test(email);
   }
 
-  // event handlers need "this"
   onSubmit = (event) => {
     event.preventDefault();
     const email = this.state.email;
@@ -45,14 +44,12 @@ class NewsletterForm extends React.Component {
     }, 3000);
   };
 
-  // controlled component/input
   onInputChange = (event) => {
     this.setState({
       email: event.target.value,
     });
   };
 
-  // render runs everytime state changes
   render() {
     const isSubmitted = this.state.successMessage.trim().length > 0;
 
@@ -60,34 +57,28 @@ class NewsletterForm extends React.Component {
       return <div className="container">{this.state.successMessage}</div>;
     }
 
-    // render must -RETURN- JSX
     return (
       <form className="form-newsletter container" onSubmit={this.onSubmit}>
-        <label htmlFor="field-newsletter">
-          Subscribe to our <span>newsletter</span>
-        </label>
-
+        <label htmlFor="field-newsletter">sign up for our newsletter</label>
         <input
           type="text"
           name="field-newsletter"
           id="field-newsletter"
-          placeholder="vrem sa iesim la pauza =))"
           onChange={this.onInputChange}
           value={this.state.email}
         ></input>
-
-        <button title="Subcribe" type="submit" disabled={this.state.busy}>
-          {this.state.busy ? '...loading' : 'Submit'}
+        <button title="Submit" type="submit" disabled={this.state.busy}>
+          {this.state.busy ? <span className="spinner"></span> : 'Submit'}
         </button>
-
-        <div className="form-message">{this.state.formMessage}</div>
+        <span className="form-message">{this.state.formMessage}</span>
       </form>
     );
   }
 }
 
-const newsletterContainer = document.querySelector('.home-newsletter');
-// React recipe?
+const newsletterContainer = document.querySelector(
+  '.footer-sign-up-newsletter',
+);
 ReactDOM.createRoot(newsletterContainer).render(
   <NewsletterForm></NewsletterForm>,
 );
@@ -99,9 +90,6 @@ class AddToCartButton extends React.Component {
   };
 
   onClick = () => {
-    // NO
-    // this.state.added = !this.state.added
-
     this.setState({
       busy: true,
     });
@@ -126,27 +114,29 @@ class AddToCartButton extends React.Component {
     }, 2000);
   };
 
-  // all components require a render
   render() {
-    // render must return jsx
     return (
       <button
-        className={`product-control ${this.state.added ? 'active' : ''}`}
+        className={`product-a2c ${this.state.added ? 'active' : ''} ${
+          this.state.busy ? 'animation' : ''
+        }`}
         onClick={this.onClick}
         type="button"
         title={this.state.added === true ? 'Remove from Cart' : 'Add to Cart'}
         disabled={this.state.busy}
       >
-        {this.state.added === true
-          ? `PID: ${this.props.productId} in cart`
-          : 'Add to Cart'}
-        {this.state.busy ? <i className="fas fa-spinner"></i> : ''}
+        {this.state.busy ? (
+          <i className="fas fa-spinner"></i>
+        ) : this.state.added === true ? (
+          <i className="far fa-minus-square"></i>
+        ) : (
+          <i className="far fa-plus-square"></i>
+        )}
       </button>
     );
   }
 }
 
-// function react component
 const AddToWishlistButton = ({ productId }) => {
   const state = React.useState({
     added: false,
@@ -162,7 +152,6 @@ const AddToWishlistButton = ({ productId }) => {
     });
 
     setTimeout(() => {
-      // dispatch event
       const newEvent = new CustomEvent(
         actualState.added ? REMOVE_FROM_WISHLIST_EVENT : ADD_TO_WISHLIST_EVENT,
         {
@@ -183,30 +172,32 @@ const AddToWishlistButton = ({ productId }) => {
 
   return (
     <button
-      className={`product-control ${actualState.added ? 'active' : ''}`}
+      className={`product-a2f ${actualState.added ? 'active' : ''} ${
+        actualState.busy ? 'animation' : ''
+      }`}
       title={actualState.added ? 'Remove from Wishlist' : 'Add to Wishlist'}
       type="button"
       onClick={onClick}
     >
-      {actualState.added === true
-        ? `PID: ${productId} in wishlist`
-        : 'Add to Wishlist'}
-      {actualState.busy ? <i className="fas fa-spinner"></i> : ''}
+      {actualState.busy ? (
+        <i className="fas fa-spinner"></i>
+      ) : actualState.added === true ? (
+        <i className="fas fa-heart-broken"></i>
+      ) : (
+        <i className="far fa-heart"></i>
+      )}
     </button>
   );
 };
 
 class ProductControls extends React.Component {
-  // jsx needs one root export element
   render() {
     const productId = this.props.productId;
 
-    // study 1
     const WrappedButton = ({ productId }) => {
       return <AddToCartButton productId={productId}></AddToCartButton>;
     };
 
-    // study 2
     const X = AddToWishlistButton;
 
     return [
@@ -217,6 +208,7 @@ class ProductControls extends React.Component {
 }
 
 const productTileControls = document.querySelectorAll('.product-tile-controls');
+
 productTileControls.forEach((productTileControl, index) => {
   ReactDOM.createRoot(productTileControl).render(
     <ProductControls productId={index}></ProductControls>,
@@ -233,12 +225,9 @@ class HeaderCounters extends React.Component {
 
   productCartAction = (event) => {
     const { productId } = event.detail;
-    alert(productId);
-    // slice will clone the array
-    // we don't mutate state
+
     const cartItems = this.state.cartItems.slice();
-    // named destructure
-    // const eventType = event.type
+
     const { type: eventType } = event;
 
     switch (eventType) {
@@ -251,7 +240,6 @@ class HeaderCounters extends React.Component {
         break;
 
       case REMOVE_FROM_CART_EVENT:
-        // filter clones as well
         this.setState({
           cartItems: cartItems.filter((item) => {
             return item !== productId;
@@ -267,7 +255,6 @@ class HeaderCounters extends React.Component {
 
     switch (event.type) {
       case ADD_TO_WISHLIST_EVENT:
-        // rest operator example
         const newProductIds =
           this.state.wishlistItems.length === 0
             ? [productId]
@@ -306,12 +293,9 @@ class HeaderCounters extends React.Component {
     removeEventListener(REMOVE_FROM_WISHLIST_EVENT, this.productWishlistAction);
   }
 
-  // see some nasty stuff
-
   showProducts = (collectionName, displayName) => {
     let message = '';
 
-    // dynamic access with bracket notation
     if (this.state[collectionName].length <= 0) {
       message = `There are no products in your ${displayName}.`;
     } else {
@@ -320,11 +304,10 @@ class HeaderCounters extends React.Component {
 
     alert(message);
   };
-
   render() {
     return (
       <>
-        <div
+        <li
           className="header-counter"
           onClick={() => {
             this.showProducts('wishlistItems', 'wishlist');
@@ -332,9 +315,9 @@ class HeaderCounters extends React.Component {
         >
           <span className="qty">{this.state.wishlistItemsCount}</span>
           <i className="fas fa-heart icon"></i>
-        </div>
+        </li>
 
-        <div
+        <li
           className="header-counter"
           onClick={() => {
             this.showProducts('cartItems', 'cart');
@@ -342,36 +325,12 @@ class HeaderCounters extends React.Component {
         >
           <span className="qty">{this.state.cartItemsCount}</span>
           <i className="fas fa-shopping-cart icon"></i>
-        </div>
-      </>
-    );
-  }
-}
-
-// not necessary for monochrome
-class HCWrapper extends React.Component {
-  state = {
-    visible: true,
-  };
-
-  onClick = () => {
-    this.setState({
-      visible: !this.state.visible,
-    });
-  };
-
-  render() {
-    return (
-      <>
-        <button title="title" onClick={this.onClick}>
-          toggle
-        </button>
-        {this.state.visible ? <HeaderCounters></HeaderCounters> : ''}
+        </li>
       </>
     );
   }
 }
 
 const headerCounters = document.querySelector('.header-counters');
-// mount react the good way
-ReactDOM.createRoot(headerCounters).render(<HCWrapper></HCWrapper>);
+
+ReactDOM.createRoot(headerCounters).render(<HeaderCounters></HeaderCounters>);

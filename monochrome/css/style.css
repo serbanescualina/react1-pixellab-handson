@@ -512,7 +512,8 @@ imaginea. Imi strica alinierea si nu am reusit sa o remediez, asa ca am apelat
   text-align: center;
 }
 
-.product-tile a {
+.product-tile button {
+  border: none;
   text-align: center;
   font-size: 22px;
   color: #2b2b2b;
@@ -636,6 +637,8 @@ aside img {
   border-color: white;
 }
 .footer-sign-up-newsletter button {
+  position: relative;
+  height: 30px;
   margin: 10px 5px;
   padding: 5px 0;
   font-family: 'Roboto';
@@ -663,3 +666,29 @@ aside img {
 }
 /* footer-ul nu e aliniat ca in design.
 Il voi schimba daca trebuie, dar m-am distrat putin aranjanu-le */
+
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner:before {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  margin-left: -10px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  border-top-color: #000;
+  animation: spinner 0.6s linear infinite;
+}
+
+.animation .fa-spinner {
+  animation: spinner 0.6s linear infinite;
+}
