@@ -14,7 +14,7 @@ export const render = (contact) => {
     </ul>
     <button title="Delete"
       type="button"
-      class="btn btn-secondary delete-friend"
+      class="btn btn-secondary delete-contact-button"
     >Delete</button>
 
     <button title="Edit"

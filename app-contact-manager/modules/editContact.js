@@ -38,7 +38,7 @@ export const render = (contact) => {
     <div class="mt-2">
       <button type="submit"
         title="Save"
-        class="btn btn-secondary me-1"
+        class="btn btn-secondary me-1 edit-contact"
       >Save</button>
       <button type="button"
         title="Cancel"
